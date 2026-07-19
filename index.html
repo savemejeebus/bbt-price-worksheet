@@ -266,7 +266,10 @@ const MiniZip = {
     --shadow-md: 0 4px 16px rgba(27,58,42,0.14);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { font-size: 16px; }
+  html {
+    font-size: 16px;
+    scroll-padding-bottom: 110px;
+  }
   body {
     font-family: 'DM Sans', sans-serif;
     background: var(--bg);
@@ -796,6 +799,7 @@ const MiniZip = {
     .stepper { gap: 4px; }
     .step-btn { width: 32px; }
     body { padding-bottom: 96px; }
+    html { scroll-padding-bottom: 90px; }
     .bottom-bar {
       left: 50%;
       right: auto;
