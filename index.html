@@ -257,6 +257,13 @@ const MiniZip = {
     --danger: #c0392b;
     --radius: 12px;
     --radius-sm: 8px;
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 24px;
+    --shadow-sm: 0 1px 2px rgba(27,58,42,0.08);
+    --shadow-md: 0 4px 16px rgba(27,58,42,0.14);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { font-size: 16px; }
@@ -291,11 +298,54 @@ const MiniZip = {
     color: rgba(255,255,255,0.6);
     margin-top: 2px;
   }
+  .dashboard-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-top: 10px;
+  }
+  .progress-ring {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+  }
+  .progress-ring svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+  .progress-ring .ring-track {
+    fill: none;
+    stroke: rgba(255,255,255,0.15);
+    stroke-width: 3;
+  }
+  .progress-ring .ring-fg {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-dasharray: 94.2;
+    stroke-dashoffset: 94.2;
+    transition: stroke-dashoffset 0.3s ease;
+  }
+  .progress-ring .ring-label {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: white;
+  }
   .live-total {
     display: flex;
     align-items: baseline;
     gap: 8px;
-    margin-top: 10px;
+    flex: 1;
+    min-width: 0;
     background: rgba(255,255,255,0.07);
     border-radius: var(--radius-sm);
     padding: 8px 12px;
@@ -307,6 +357,10 @@ const MiniZip = {
     font-weight: 700;
     color: #7ed9a8;
     transition: color 0.2s;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   /* FORM */
@@ -355,6 +409,7 @@ const MiniZip = {
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
     -webkit-appearance: none;
+    appearance: none;
   }
   .field input:focus {
     border-color: var(--green-mid);
@@ -478,7 +533,8 @@ const MiniZip = {
     gap: 8px;
   }
   .item-inputs.single { grid-template-columns: 1fr; }
-  .item-inputs .mini-field label {
+  .item-inputs .mini-field label,
+  .custom-item-grid .mini-field label {
     font-size: 0.7rem;
     font-weight: 600;
     color: var(--text-muted);
@@ -487,7 +543,8 @@ const MiniZip = {
     margin-bottom: 4px;
     display: block;
   }
-  .item-inputs input {
+  .item-inputs input,
+  .custom-item-grid input {
     width: 100%;
     padding: 11px 10px;
     border: 1.5px solid #e0c8d0;
@@ -498,10 +555,12 @@ const MiniZip = {
     color: var(--text);
     outline: none;
     -webkit-appearance: none;
+    appearance: none;
     font-variant-numeric: tabular-nums;
     transition: border-color 0.2s;
   }
-  .item-inputs input:focus {
+  .item-inputs input:focus,
+  .custom-item-grid input:focus {
     border-color: var(--green-mid);
   }
 
@@ -560,6 +619,7 @@ const MiniZip = {
     color: white;
     outline: none;
     -webkit-appearance: none;
+    appearance: none;
     transition: border-color 0.2s;
     margin-bottom: 12px;
     font-variant-numeric: tabular-nums;
@@ -629,6 +689,121 @@ const MiniZip = {
     border-radius: 0 4px 4px 0;
     margin-bottom: 10px;
   }
+
+  /* QTY STEPPER */
+  .stepper {
+    display: flex;
+    align-items: stretch;
+    gap: 6px;
+  }
+  .stepper input { flex: 1; min-width: 0; text-align: center; }
+  .step-btn {
+    flex-shrink: 0;
+    width: 40px;
+    border: 1.5px solid #e0c8d0;
+    border-radius: 6px;
+    background: white;
+    color: var(--green-dark);
+    font-family: 'Syne', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s, color 0.15s;
+  }
+  .step-btn:active { background: var(--green-mid); color: white; border-color: var(--green-mid); }
+  .line-item.no-disc .step-btn { border-color: #b8d8c4; }
+
+  /* SECTION NAV RAIL (tablet+) */
+  .section-nav { display: none; }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 10px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text);
+    text-align: left;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s;
+  }
+  .nav-item:hover, .nav-item:active { background: rgba(46,107,71,0.08); }
+  .nav-item.active { background: var(--green-dark); color: white; }
+  .nav-item-icon { flex-shrink: 0; font-size: 1rem; }
+  .nav-item-label {
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .nav-dot {
+    flex-shrink: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: background 0.15s;
+  }
+  .nav-dot.has-data { background: var(--accent); }
+  .nav-item.active .nav-dot { background: rgba(255,255,255,0.4); }
+  .nav-item.active .nav-dot.has-data { background: var(--accent); }
+
+  /* TABLET+ LAYOUT */
+  @media (min-width: 768px) {
+    .app-layout {
+      display: grid;
+      grid-template-columns: 230px 1fr;
+      align-items: start;
+      gap: var(--space-4);
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: var(--space-4);
+    }
+    .section-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      position: sticky;
+      top: calc(var(--header-h, 160px) + var(--space-3));
+      background: var(--bg-card);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--space-2);
+      box-shadow: var(--shadow-sm);
+    }
+    .form-body { padding: 0; }
+    .section.open .section-body {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-3);
+      align-content: start;
+    }
+    .section-body .section-note { grid-column: 1 / -1; }
+    .line-item { margin-bottom: 0; }
+    .line-item:has(.custom-item-grid) { grid-column: 1 / -1; }
+    .item-inputs { grid-template-columns: 1.3fr 1fr; }
+    .stepper { gap: 4px; }
+    .step-btn { width: 32px; }
+    body { padding-bottom: 96px; }
+    .bottom-bar {
+      left: 50%;
+      right: auto;
+      transform: translateX(-50%);
+      width: min(100%, 1100px);
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+  }
 </style>
 </head>
 <body>
@@ -636,13 +811,39 @@ const MiniZip = {
 <header class="app-header">
   <h1>Big Bully Turf — Price Worksheet</h1>
   <p>Utah 2026 · Fill out and download</p>
-  <div class="live-total">
-    <span class="label">Running Total</span>
-    <span class="amount" id="liveTotal">$0.00</span>
+  <div class="dashboard-row">
+    <div class="progress-ring">
+      <svg viewBox="0 0 36 36">
+        <circle class="ring-track" cx="18" cy="18" r="15"></circle>
+        <circle class="ring-fg" id="progressRingFg" cx="18" cy="18" r="15"></circle>
+      </svg>
+      <span class="ring-label" id="progressLabel">0/12</span>
+    </div>
+    <div class="live-total">
+      <span class="label">Running Total</span>
+      <span class="amount" id="liveTotal">$0.00</span>
+    </div>
   </div>
 </header>
 
-<div class="form-body">
+<div class="app-layout">
+
+  <nav class="section-nav" aria-label="Jump to section">
+    <button type="button" class="nav-item" data-nav="turf" onclick="navToSection('turf')"><span class="nav-item-icon">🌿</span><span class="nav-item-label">Turf</span><span class="nav-dot" id="navdot-turf"></span></button>
+    <button type="button" class="nav-item" data-nav="rock" onclick="navToSection('rock')"><span class="nav-item-icon">🪨</span><span class="nav-item-label">Rock, Mulch &amp; DG</span><span class="nav-dot" id="navdot-rock"></span></button>
+    <button type="button" class="nav-item" data-nav="pavers" onclick="navToSection('pavers')"><span class="nav-item-icon">🧱</span><span class="nav-item-label">Pavers, Stone &amp; Edging</span><span class="nav-dot" id="navdot-pavers"></span></button>
+    <button type="button" class="nav-item" data-nav="edging" onclick="navToSection('edging')"><span class="nav-item-icon">📏</span><span class="nav-item-label">Edging &amp; Borders</span><span class="nav-dot" id="navdot-edging"></span></button>
+    <button type="button" class="nav-item" data-nav="walls" onclick="navToSection('walls')"><span class="nav-item-icon">🏗</span><span class="nav-item-label">Retaining Walls</span><span class="nav-dot" id="navdot-walls"></span></button>
+    <button type="button" class="nav-item" data-nav="demo" onclick="navToSection('demo')"><span class="nav-item-icon">💥</span><span class="nav-item-label">Demo &amp; Excavation</span><span class="nav-dot" id="navdot-demo"></span></button>
+    <button type="button" class="nav-item" data-nav="trees" onclick="navToSection('trees')"><span class="nav-item-icon">🌳</span><span class="nav-item-label">Trees, Shrubs &amp; Removal</span><span class="nav-dot" id="navdot-trees"></span></button>
+    <button type="button" class="nav-item" data-nav="drainage" onclick="navToSection('drainage')"><span class="nav-item-icon">💧</span><span class="nav-item-label">Drainage</span><span class="nav-dot" id="navdot-drainage"></span></button>
+    <button type="button" class="nav-item" data-nav="irrigation" onclick="navToSection('irrigation')"><span class="nav-item-icon">🚿</span><span class="nav-item-label">Irrigation &amp; Lighting</span><span class="nav-dot" id="navdot-irrigation"></span></button>
+    <button type="button" class="nav-item" data-nav="commercial" onclick="navToSection('commercial')"><span class="nav-item-icon">🏢</span><span class="nav-item-label">Commercial Turf</span><span class="nav-dot" id="navdot-commercial"></span></button>
+    <button type="button" class="nav-item" data-nav="misc" onclick="navToSection('misc')"><span class="nav-item-icon">⚡</span><span class="nav-item-label">Misc &amp; Firepit</span><span class="nav-dot" id="navdot-misc"></span></button>
+    <button type="button" class="nav-item" data-nav="custom" onclick="navToSection('custom')"><span class="nav-item-icon">✏️</span><span class="nav-item-label">Custom Line Items</span><span class="nav-dot" id="navdot-custom"></span></button>
+  </nav>
+
+  <div class="form-body">
 
   <!-- JOB INFO -->
   <div class="job-info-card">
@@ -676,7 +877,7 @@ const MiniZip = {
         <div class="item-name">Effortless Flow Turf</div>
         <div class="item-meta">Includes Weed Barrier & Waffle Infill · $18.99/SF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (SF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B4" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (SF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B4',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B4" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B4',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F4" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -685,7 +886,7 @@ const MiniZip = {
         <div class="item-name">Turf Strips 6"–11"</div>
         <div class="item-meta">$21.99/LF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (LF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B7" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (LF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B7',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B7" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B7',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F7" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -694,7 +895,7 @@ const MiniZip = {
         <div class="item-name">Gopher Mesh</div>
         <div class="item-meta">$2.60/SF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (SF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B8" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (SF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B8',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B8" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B8',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F8" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -703,7 +904,7 @@ const MiniZip = {
         <div class="item-name">Putting Green</div>
         <div class="item-meta">Includes up to 3 Flags · $22.99/SF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (SF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B9" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (SF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B9',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B9" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B9',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F9" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -712,7 +913,7 @@ const MiniZip = {
         <div class="item-name">Premium Putting Green</div>
         <div class="item-meta">Includes up to 3 Flags · $25.99/SF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (SF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B11" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (SF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B11',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B11" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B11',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F11" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -721,7 +922,7 @@ const MiniZip = {
         <div class="item-name">Additional Cups</div>
         <div class="item-meta">$135.00/EA</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (EA)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B13" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (EA)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B13',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B13" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B13',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F13" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -730,7 +931,7 @@ const MiniZip = {
         <div class="item-name">Zeo Fill Sand</div>
         <div class="item-meta">$1.00/SF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (SF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B38" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (SF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B38',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B38" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B38',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F38" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -753,7 +954,7 @@ const MiniZip = {
         <div class="item-name">Rock / Mulch 0–150 SF</div>
         <div class="item-meta">150 SF min or +$250 trip fee · $13.49/SF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (SF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B14" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (SF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B14',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B14" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B14',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F14" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -762,7 +963,7 @@ const MiniZip = {
         <div class="item-name">Rock / Mulch 151–300 SF</div>
         <div class="item-meta">$12.49/SF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (SF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B16" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (SF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B16',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B16" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B16',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F16" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -771,7 +972,7 @@ const MiniZip = {
         <div class="item-name">Rock / Mulch 301–500 SF</div>
         <div class="item-meta">$11.49/SF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (SF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B17" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (SF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B17',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B17" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B17',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F17" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -780,7 +981,7 @@ const MiniZip = {
         <div class="item-name">Rock / Mulch 501–1000 SF</div>
         <div class="item-meta">$10.49/SF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (SF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B18" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (SF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B18',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B18" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B18',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F18" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -789,7 +990,7 @@ const MiniZip = {
         <div class="item-name">Weed Barrier (add to Rock)</div>
         <div class="item-meta">$1.50/SF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (SF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B19" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (SF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B19',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B19" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B19',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F19" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -798,7 +999,7 @@ const MiniZip = {
         <div class="item-name">Rock w/ Demo 0–150 SF</div>
         <div class="item-meta">Includes grass/rock removal · $14.73/SF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (SF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B20" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (SF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B20',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B20" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B20',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F20" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -806,7 +1007,7 @@ const MiniZip = {
         <div class="item-name">Rock w/ Demo 151–300 SF</div>
         <div class="item-meta">$13.75/SF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (SF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B22" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (SF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B22',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B22" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B22',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F22" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -814,7 +1015,7 @@ const MiniZip = {
         <div class="item-name">Rock w/ Demo 301–800 SF</div>
         <div class="item-meta">$12.75/SF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (SF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B23" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (SF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B23',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B23" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B23',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F23" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -823,7 +1024,7 @@ const MiniZip = {
         <div class="item-name">Decomposed Granite</div>
         <div class="item-meta">$13.99/SF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (SF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B24" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (SF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B24',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B24" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B24',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F24" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -832,7 +1033,7 @@ const MiniZip = {
         <div class="item-name">Mulch</div>
         <div class="item-meta">$9.50/SF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (SF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B25" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (SF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B25',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B25" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B25',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F25" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -853,7 +1054,7 @@ const MiniZip = {
         <div class="item-name">Pavers 0–150 SF</div>
         <div class="item-meta">150 SF min or +$250 trip fee · $33.40/SF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (SF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B26" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (SF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B26',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B26" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B26',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F26" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -861,7 +1062,7 @@ const MiniZip = {
         <div class="item-name">Pavers 151–500 SF</div>
         <div class="item-meta">$32.40/SF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (SF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B28" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (SF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B28',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B28" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B28',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F28" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -869,7 +1070,7 @@ const MiniZip = {
         <div class="item-name">Pavers 501–1000 SF</div>
         <div class="item-meta">$31.40/SF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (SF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B29" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (SF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B29',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B29" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B29',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F29" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -877,7 +1078,7 @@ const MiniZip = {
         <div class="item-name">Paver Edge — Sailor</div>
         <div class="item-meta">$30.40/LF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (LF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B30" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (LF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B30',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B30" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B30',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F30" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -885,7 +1086,7 @@ const MiniZip = {
         <div class="item-name">Paver Edge — Soldier</div>
         <div class="item-meta">$33.40/LF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (LF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B31" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (LF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B31',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B31" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B31',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F31" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -893,7 +1094,7 @@ const MiniZip = {
         <div class="item-name">Chopped Stone Edge</div>
         <div class="item-meta">$30.40/LF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (LF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B32" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (LF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B32',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B32" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B32',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F32" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -901,7 +1102,7 @@ const MiniZip = {
         <div class="item-name">Chopped Stone Edge w/ Mortar Concrete</div>
         <div class="item-meta">$32.40/LF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (LF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B33" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (LF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B33',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B33" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B33',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F33" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -909,7 +1110,7 @@ const MiniZip = {
         <div class="item-name">Polymeric Sand (Joint Stabilization)</div>
         <div class="item-meta">$1.25/SF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (SF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B34" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (SF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B34',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B34" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B34',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F34" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -917,7 +1118,7 @@ const MiniZip = {
         <div class="item-name">Flagstone</div>
         <div class="item-meta">$31.00/SF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (SF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B35" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (SF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B35',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B35" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B35',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F35" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -925,7 +1126,7 @@ const MiniZip = {
         <div class="item-name">2×2 Stepping Stones</div>
         <div class="item-meta">$125.00/EA</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (EA)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B36" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (EA)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B36',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B36" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B36',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F36" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -933,7 +1134,7 @@ const MiniZip = {
         <div class="item-name">Concrete</div>
         <div class="item-meta">300 SF minimum, no color/stamp · $33.00/SF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (SF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B37" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (SF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B37',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B37" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B37',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F37" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -941,7 +1142,7 @@ const MiniZip = {
         <div class="item-name">Cut Outs</div>
         <div class="item-meta">$30.00/SF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (SF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B49" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (SF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B49',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B49" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B49',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F49" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -962,7 +1163,7 @@ const MiniZip = {
         <div class="item-name">Bender Board</div>
         <div class="item-meta">$11.00/LF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (LF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B39" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (LF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B39',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B39" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B39',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F39" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -970,7 +1171,7 @@ const MiniZip = {
         <div class="item-name">Pressure Treated Lumber</div>
         <div class="item-meta">$11.00/LF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (LF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B40" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (LF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B40',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B40" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B40',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F40" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -991,7 +1192,7 @@ const MiniZip = {
         <div class="item-name">Diamond Pro with Cap</div>
         <div class="item-meta">$75.00/LF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (LF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B43" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (LF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B43',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B43" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B43',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F43" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -999,7 +1200,7 @@ const MiniZip = {
         <div class="item-name">Melville w/ Cap — Standard Install</div>
         <div class="item-meta">$75.00/LF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (LF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B44" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (LF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B44',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B44" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B44',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F44" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -1007,7 +1208,7 @@ const MiniZip = {
         <div class="item-name">Melville w/ Cap — Staggered 30/</div>
         <div class="item-meta">$80.00/LF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (LF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B45" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (LF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B45',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B45" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B45',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F45" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -1015,7 +1216,7 @@ const MiniZip = {
         <div class="item-name">Melville w/ Cap (standard)</div>
         <div class="item-meta">$87.00/LF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (LF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B46" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (LF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B46',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B46" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B46',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F46" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -1023,7 +1224,7 @@ const MiniZip = {
         <div class="item-name">Melville Staggered 70/30 Split w/ Cap</div>
         <div class="item-meta">$96.00/LF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (LF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B47" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (LF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B47',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B47" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B47',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F47" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -1031,7 +1232,7 @@ const MiniZip = {
         <div class="item-name">Keystone</div>
         <div class="item-meta">$72.00/LF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (LF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B48" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (LF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B48',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B48" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B48',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F48" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -1052,7 +1253,7 @@ const MiniZip = {
         <div class="item-name">Demo & Remove Concrete</div>
         <div class="item-meta">$8.00/SF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (SF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B41" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (SF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B41',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B41" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B41',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F41" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -1060,7 +1261,7 @@ const MiniZip = {
         <div class="item-name">Dig Out & Weed Barrier Install Only</div>
         <div class="item-meta">$6.00/SF</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (SF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B42" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (SF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B42',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B42" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B42',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F42" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -1069,28 +1270,28 @@ const MiniZip = {
         <div class="item-name">Rock Relocation</div>
         <div class="item-meta">No discount · $3.00/SF</div>
         <div class="item-inputs single">
-          <div class="mini-field"><label>Qty (SF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B57" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (SF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B57',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B57" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B57',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
         </div>
       </div>
       <div class="line-item no-disc" data-row="58" data-cost="600.00">
         <div class="item-name">Dumpster</div>
         <div class="item-meta">No discount · $600.00/EA</div>
         <div class="item-inputs single">
-          <div class="mini-field"><label>Qty (EA)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B58" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (EA)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B58',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B58" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B58',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
         </div>
       </div>
       <div class="line-item no-disc" data-row="69" data-cost="3.00">
         <div class="item-name">Double Dig (Extra 2")</div>
         <div class="item-meta">No discount · $3.00/SF</div>
         <div class="item-inputs single">
-          <div class="mini-field"><label>Qty (SF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B69" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (SF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B69',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B69" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B69',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
         </div>
       </div>
       <div class="line-item no-disc" data-row="70" data-cost="13.00">
         <div class="item-name">Planter Backfill</div>
         <div class="item-meta">No discount · L×W×H÷27 · $13.00/SF</div>
         <div class="item-inputs single">
-          <div class="mini-field"><label>Qty (SF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B70" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (SF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B70',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B70" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B70',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
         </div>
       </div>
     </div>
@@ -1111,35 +1312,35 @@ const MiniZip = {
         <div class="item-name">Tree Removal (up to 8')</div>
         <div class="item-meta">Larger requires manager approval · $500.00/EA</div>
         <div class="item-inputs single">
-          <div class="mini-field"><label>Qty (EA)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B59" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (EA)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B59',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B59" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B59',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
         </div>
       </div>
       <div class="line-item no-disc" data-row="60" data-cost="50.00">
         <div class="item-name">Stump Grind (add with tree removal)</div>
         <div class="item-meta">$50.00/EA</div>
         <div class="item-inputs single">
-          <div class="mini-field"><label>Qty (EA)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B60" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (EA)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B60',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B60" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B60',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
         </div>
       </div>
       <div class="line-item no-disc" data-row="61" data-cost="5.00">
         <div class="item-name">Bush Removal (per gallon)</div>
         <div class="item-meta">Ex: 5-gallon = $25 · $5.00/gallon</div>
         <div class="item-inputs single">
-          <div class="mini-field"><label>Total Gallons</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B61" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Total Gallons</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B61',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B61" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B61',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
         </div>
       </div>
       <div class="line-item no-disc" data-row="62" data-cost="500.00">
         <div class="item-name">Root Removal (surface roots)</div>
         <div class="item-meta">$500/EA per 200 SF surface roots</div>
         <div class="item-inputs single">
-          <div class="mini-field"><label>Qty (EA)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B62" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (EA)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B62',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B62" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B62',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
         </div>
       </div>
       <div class="line-item no-disc" data-row="76" data-cost="2.00">
         <div class="item-name">Turf Removal & Disposal</div>
         <div class="item-meta">$2.00/SF</div>
         <div class="item-inputs single">
-          <div class="mini-field"><label>Qty (SF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B76" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (SF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B76',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B76" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B76',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
         </div>
       </div>
     </div>
@@ -1160,21 +1361,21 @@ const MiniZip = {
         <div class="item-name">Drain (pipe without drain cap)</div>
         <div class="item-meta">$22.00/LF</div>
         <div class="item-inputs single">
-          <div class="mini-field"><label>Qty (LF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B63" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (LF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B63',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B63" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B63',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
         </div>
       </div>
       <div class="line-item no-disc" data-row="64" data-cost="34.00">
         <div class="item-name">French Drain</div>
         <div class="item-meta">Includes 1 drain cap per 10 LF · $34.00/LF</div>
         <div class="item-inputs single">
-          <div class="mini-field"><label>Qty (LF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B64" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (LF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B64',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B64" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B64',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
         </div>
       </div>
       <div class="line-item no-disc" data-row="65" data-cost="10.00">
         <div class="item-name">Drainage Rock</div>
         <div class="item-meta">DO NOT sell as landscape rock · $10.00/SF</div>
         <div class="item-inputs single">
-          <div class="mini-field"><label>Qty (SF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B65" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (SF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B65',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B65" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B65',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
         </div>
       </div>
     </div>
@@ -1195,56 +1396,56 @@ const MiniZip = {
         <div class="item-name">Irrigation Package 1</div>
         <div class="item-meta">0–500 SF · 1 tree, 8 bush · $699.00/EA</div>
         <div class="item-inputs single">
-          <div class="mini-field"><label>Qty (EA)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B66" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (EA)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B66',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B66" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B66',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
         </div>
       </div>
       <div class="line-item no-disc" data-row="67" data-cost="1099.00">
         <div class="item-name">Irrigation Package 2</div>
         <div class="item-meta">501–900 SF · 2 tree, 12 bush · $1,099.00/EA</div>
         <div class="item-inputs single">
-          <div class="mini-field"><label>Qty (EA)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B67" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (EA)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B67',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B67" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B67',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
         </div>
       </div>
       <div class="line-item no-disc" data-row="68" data-cost="1399.00">
         <div class="item-name">Irrigation Package 3</div>
         <div class="item-meta">901–1300 SF · 4 tree, 15 bush · $1,399.00/EA</div>
         <div class="item-inputs single">
-          <div class="mini-field"><label>Qty (EA)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B68" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (EA)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B68',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B68" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B68',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
         </div>
       </div>
       <div class="line-item no-disc" data-row="71" data-cost="1250.00">
         <div class="item-name">Lighting Package 1</div>
         <div class="item-meta">Wire, Timer, Transformer, 4 Lights · $1,250.00/EA</div>
         <div class="item-inputs single">
-          <div class="mini-field"><label>Qty (EA)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B71" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (EA)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B71',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B71" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B71',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
         </div>
       </div>
       <div class="line-item no-disc" data-row="72" data-cost="1500.00">
         <div class="item-name">Lighting Package 2</div>
         <div class="item-meta">Wire, Timer, Transformer, 6 Lights · $1,500.00/EA</div>
         <div class="item-inputs single">
-          <div class="mini-field"><label>Qty (EA)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B72" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (EA)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B72',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B72" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B72',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
         </div>
       </div>
       <div class="line-item no-disc" data-row="73" data-cost="2650.00">
         <div class="item-name">Lighting Package 3</div>
         <div class="item-meta">Wire, Timer, Transformer, 10 Lights · $2,650.00/EA</div>
         <div class="item-inputs single">
-          <div class="mini-field"><label>Qty (EA)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B73" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (EA)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B73',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B73" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B73',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
         </div>
       </div>
       <div class="line-item no-disc" data-row="74" data-cost="1350.00">
         <div class="item-name">EZ-FLO Fertilizer Dispenser</div>
         <div class="item-meta">Includes 1 month premium mix · $1,350.00/EA</div>
         <div class="item-inputs single">
-          <div class="mini-field"><label>Qty (EA)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B74" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (EA)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B74',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B74" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B74',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
         </div>
       </div>
       <div class="line-item no-disc" data-row="75" data-cost="153.00">
         <div class="item-name">1 Month Fertilizer Mix (refill)</div>
         <div class="item-meta">$153.00/EA</div>
         <div class="item-inputs single">
-          <div class="mini-field"><label>Qty (EA)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B75" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (EA)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B75',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B75" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B75',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
         </div>
       </div>
     </div>
@@ -1265,14 +1466,14 @@ const MiniZip = {
         <div class="item-name">Commercial Turf 3,001–5,000 SF</div>
         <div class="item-meta">$11.99/SF</div>
         <div class="item-inputs single">
-          <div class="mini-field"><label>Qty (SF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B55" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (SF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B55',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B55" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B55',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
         </div>
       </div>
       <div class="line-item no-disc" data-row="56" data-cost="10.99">
         <div class="item-name">Commercial Turf 5,001–9,000 SF</div>
         <div class="item-meta">$10.99/SF</div>
         <div class="item-inputs single">
-          <div class="mini-field"><label>Qty (SF)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B56" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (SF)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B56',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B56" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B56',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
         </div>
       </div>
     </div>
@@ -1292,7 +1493,7 @@ const MiniZip = {
         <div class="item-name">Firepit (Without Gas Line)</div>
         <div class="item-meta">$3,150.00/EA · DO NOT SELL gas line</div>
         <div class="item-inputs">
-          <div class="mini-field"><label>Qty (EA)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B50" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (EA)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B50',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B50" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B50',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F50" onchange="updateTotal()"></div>
         </div>
       </div>
@@ -1300,7 +1501,7 @@ const MiniZip = {
         <div class="item-name">Poor Access</div>
         <div class="item-meta">No discount · $400.00/EA</div>
         <div class="item-inputs single">
-          <div class="mini-field"><label>Qty (EA)</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B77" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty (EA)</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B77',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B77" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B77',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
         </div>
       </div>
     </div>
@@ -1321,7 +1522,7 @@ const MiniZip = {
         <div class="item-name">Custom Item A (Row 52) — with discount</div>
         <div class="custom-item-grid">
           <div class="span-2 mini-field"><label>Description</label><input type="text" id="C52_desc" placeholder="Item description" autocomplete="off" onchange="updateBadge('custom')"></div>
-          <div class="mini-field"><label>Qty</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B52" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B52',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B52" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B52',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Unit</label><input type="text" id="C52" placeholder="SF / LF / EA" autocomplete="off" onchange="updateBadge('custom')"></div>
           <div class="mini-field"><label>Unit Cost ($)</label><input type="number" inputmode="decimal" min="0" placeholder="0.00" id="D52" onchange="updateTotal()"></div>
           <div class="mini-field"><label>Discount %</label><input type="number" inputmode="decimal" min="0" max="30" placeholder="0" id="F52" onchange="updateTotal()"></div>
@@ -1332,7 +1533,7 @@ const MiniZip = {
         <div class="item-name">Custom Item B (Row 78) — no discount</div>
         <div class="custom-item-grid">
           <div class="span-2 mini-field"><label>Description</label><input type="text" id="A78" placeholder="Item description" autocomplete="off" onchange="updateBadge('custom')"></div>
-          <div class="mini-field"><label>Qty</label><input type="number" inputmode="decimal" min="0" placeholder="0" id="B78" onchange="updateTotal()"></div>
+          <div class="mini-field"><label>Qty</label><div class="stepper"><button type="button" class="step-btn" onclick="stepValue('B78',-1)" aria-label="Decrease quantity" tabindex="-1">−</button><input type="number" inputmode="decimal" min="0" placeholder="0" id="B78" onchange="updateTotal()"><button type="button" class="step-btn" onclick="stepValue('B78',1)" aria-label="Increase quantity" tabindex="-1">+</button></div></div>
           <div class="mini-field"><label>Unit</label><input type="text" id="C78" placeholder="SF / LF / EA" autocomplete="off" onchange="updateBadge('custom')"></div>
           <div class="span-2 mini-field"><label>Unit Cost ($)</label><input type="number" inputmode="decimal" min="0" placeholder="0.00" id="D78" onchange="updateTotal()"></div>
         </div>
@@ -1349,7 +1550,9 @@ const MiniZip = {
     <input type="number" inputmode="decimal" min="0" placeholder="0.00" id="E83" onchange="updateTotal()">
   </div>
 
-</div><!-- /form-body -->
+  </div><!-- /form-body -->
+
+</div><!-- /app-layout -->
 
 <div class="bottom-bar">
   <button class="clear-btn" onclick="clearAll()">Clear All</button>
@@ -1372,12 +1575,7 @@ function setJobType(type) {
 function toggleSection(id) {
   const section = document.getElementById('sec-' + id);
   if (!section) return;
-  const body = section.querySelector('.section-body');
-  const chevron = section.querySelector('.chevron');
-  if (!body) return;
-  const isOpen = body.style.display === 'block';
-  body.style.display = isOpen ? 'none' : 'block';
-  if (chevron) chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
+  section.classList.toggle('open');
 }
 
 // Attach section toggle listeners (more reliable than inline onclick on iOS)
@@ -1386,6 +1584,37 @@ document.querySelectorAll('.section-header[data-section]').forEach(function(btn)
     toggleSection(btn.getAttribute('data-section'));
   });
 });
+
+// Keep the tablet nav rail's sticky offset in sync with the real header height
+function syncHeaderHeight() {
+  const header = document.querySelector('.app-header');
+  if (header) document.documentElement.style.setProperty('--header-h', header.offsetHeight + 'px');
+}
+window.addEventListener('resize', syncHeaderHeight);
+syncHeaderHeight();
+
+// ─── SECTION NAV RAIL (tablet+) ────────────────────────────────────────────
+function navToSection(id) {
+  const section = document.getElementById('sec-' + id);
+  if (!section) return;
+  section.classList.add('open');
+  section.scrollIntoView({behavior: 'smooth', block: 'start'});
+  document.querySelectorAll('.nav-item').forEach(function(btn) {
+    btn.classList.toggle('active', btn.getAttribute('data-nav') === id);
+  });
+}
+
+// ─── QTY STEPPER ────────────────────────────────────────────────────────────
+function stepValue(id, delta) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const step = parseFloat(el.step) || 1;
+  const min = el.min !== '' ? parseFloat(el.min) : -Infinity;
+  let v = (parseFloat(el.value) || 0) + delta * step;
+  if (v < min) v = min;
+  el.value = v;
+  el.dispatchEvent(new Event('change'));
+}
 
 
 // ─── LIVE TOTAL ────────────────────────────────────────────────────────────
@@ -1438,13 +1667,31 @@ function val(id) {
 
 function updateBadge(sectionId) {
   const inputs = SECTION_INPUTS[sectionId] || [];
-  const badge = document.getElementById('badge-' + sectionId);
-  if (!badge) return;
   const hasData = inputs.some(id => {
     const el = document.getElementById(id);
     return el && el.value && el.value !== '0' && el.value !== '';
   });
-  badge.classList.toggle('has-data', hasData);
+  const badge = document.getElementById('badge-' + sectionId);
+  if (badge) badge.classList.toggle('has-data', hasData);
+  const dot = document.getElementById('navdot-' + sectionId);
+  if (dot) dot.classList.toggle('has-data', hasData);
+}
+
+function updateProgressRing() {
+  const keys = Object.keys(SECTION_INPUTS);
+  const filled = keys.filter(k => {
+    const badge = document.getElementById('badge-' + k);
+    return badge && badge.classList.contains('has-data');
+  }).length;
+  const total = keys.length;
+  const circle = document.getElementById('progressRingFg');
+  if (circle) {
+    const circumference = 2 * Math.PI * 15;
+    circle.style.strokeDasharray = String(circumference);
+    circle.style.strokeDashoffset = String(circumference * (1 - filled / total));
+  }
+  const label = document.getElementById('progressLabel');
+  if (label) label.textContent = filled + '/' + total;
 }
 
 function updateTotal() {
@@ -1476,6 +1723,7 @@ function updateTotal() {
 
   // Update all badges
   Object.keys(SECTION_INPUTS).forEach(updateBadge);
+  updateProgressRing();
 }
 
 // ─── CLEAR ALL ─────────────────────────────────────────────────────────────
